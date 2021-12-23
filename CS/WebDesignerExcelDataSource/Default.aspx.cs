@@ -1,11 +1,11 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Web.Hosting;
 using DevExpress.DashboardCommon;
 using DevExpress.DashboardWeb;
 using DevExpress.DataAccess.Excel;
 using DevExpress.Spreadsheet;
-using System.Linq;
-using System.IO;
 
 namespace WebDesignerExcelDataSource {
     public partial class Default : System.Web.UI.Page {
@@ -20,8 +20,9 @@ namespace WebDesignerExcelDataSource {
                 .SelectMany(file => {
                     workbook.LoadDocument(file);
                     return workbook.Worksheets.Select(sheet => {
-                        var dataSourceName = string.Format("{0} - {1}", Path.GetFileNameWithoutExtension(file), sheet.Name);
-                        var excelDataSource = new DashboardExcelDataSource(dataSourceName);
+                        var dataSourceId = string.Format("{0} - {1}", Path.GetFileNameWithoutExtension(file), sheet.Name);
+                        var excelDataSource = new DashboardExcelDataSource(dataSourceId);
+                        excelDataSource.ConnectionName = dataSourceId;
                         excelDataSource.FileName = file;
                         var worksheetSettings = new ExcelWorksheetSettings() { WorksheetName = sheet.Name };
                         excelDataSource.SourceOptions = new ExcelSourceOptions(worksheetSettings);
